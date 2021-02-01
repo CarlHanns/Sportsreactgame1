@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>React Sports Game</title>
+    <!-- <link rel="stylesheet" href="main.css" /> -->
+    <style></style>
+  </head>
+  <body>
+    <!-- include an element for ReactDOM to attach our React-generated elements to -->
+    <div id="root"></div>
+
+    <!-- include React and ReactDOM -->
+    <script
+      crossorigin
+      src="https://unpkg.com/react@16/umd/react.development.js"
+    ></script>
+    <script
+      crossorigin
+      src="https://unpkg.com/react-dom@16/umd/react-dom.development.js"
+    ></script>
+
+    <!-- include Babel standalone so we can process JSX in React.createElement stuff -->
+    <script
+      crossorigin
+      src="https://unpkg.com/babel-standalone@6/babel.min.js"
+    ></script>
+
+    <!-- include our JS+JSX for the React Appliccation -->
+    <script type="text/babel">
+      // An App component under which all other components will be added
+
+      function App(props) {
+        return <Game venue="Madison Square Garden" />;
+      }
+
+      class Game extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            venue: props.venue,
+          };
+        }
+
+        render() {
+          return (
+            <div>
+              <h1>Welcome to {this.state.venue}</h1>
+              <Team name="New-York-Knicks" logo="./NewYork.jpg" />
+              <Team name="Chicago-Bulls" logo=" ./chi.png" />
+              <audio src="Swish.mp3" className="swish"></audio>
+              <audio src="BackBoard.mp3" className="backBoard"></audio>
+            </div>
+          );
+        }
+      }
+
+      class Team extends React.Component {
+        constructor(props) {
+          super(props);
+          this.state = {
+            name: props.name,
+            logo: props.logo,
+            shotsTaken: 0,
+            shotsMade: 0,
+          };
+        }
+        shootHandler = () => {
+          this.setState((state) => ({
+            shotsTaken: state.shotsTaken + 1,
+          }));
+          const rand = Math.ceil(Math.random() * 10);
+          if (rand > 5) {
+            this.setState((state) => ({
+              shotsMade: state.shotsMade + 1,
+            }));
+            const swishSound = document.querySelector(".swish");
+            swishSound.play();
+          } else {
+            const swishSound = document.querySelector(".backBoard");
+            swishSound.play();
+          }
+
+          document
+            .querySelector(`.${this.state.name}Percentage`)
+            .classList.remove("hide");
+        };
+
+        render() {
+          return (
+            <div className="team">
+              <h1>{this.state.name.split("-").join(" ")}</h1>
+              <img src={this.state.logo} />
+              <p>Shots Taken: {this.state.shotsTaken}</p>
+              <p>Shots Made: {this.state.shotsMade}</p>
+              <p className={`hide ${this.state.name}Percentage`}>
+                Shot Percentage:
+                {((this.state.shotsMade / this.state.shotsTaken) * 100).toFixed(
+                  2
+                )}
+                %
+              </p>
+              <button onClick={this.shootHandler}>Shoot</button>
+            </div>
+          );
+        }
+      }
+
+      // Render the App
+      ReactDOM.render(<App />, document.getElementById("root"));
+    </script>
+  </body>
+</html>
